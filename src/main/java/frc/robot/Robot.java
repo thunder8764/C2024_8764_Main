@@ -95,7 +95,7 @@ public class Robot extends TimedRobot {
   Joystick m_driverController = new Joystick(0);
 
 
-  Joystick m_manipController = new Joystick(1);
+  Joystick m_manipController = new Joystick(0);
 
 
   // --------------- Magic numbers. Use these to adjust settings. ---------------
@@ -145,7 +145,7 @@ public class Robot extends TimedRobot {
   /**
    * Percent output for the roller claw
    */
-  static final double CLAW_OUTPUT_POWER = 1;
+  static final double CLAW_OUTPUT_POWER = 0.5;
   /**
    * Percent output to help retain notes in the claw
    */
@@ -167,7 +167,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-   
+    
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
     m_chooser.addOption("launch note and drive", kLaunchAndDrive);
     m_chooser.addOption("launch", kLaunch);
@@ -218,7 +218,7 @@ public class Robot extends TimedRobot {
     m_rollerClaw.setInverted(false);
     //m_climber.setInverted(false);
 
-    m_rollerClaw.setSmartCurrentLimit(40);
+    m_rollerClaw.setSmartCurrentLimit(20);
     //m_climber.setSmartCurrentLimit(60);
     /*
      * Motors can be set to idle in brake or coast mode.
@@ -273,6 +273,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    
     m_autoSelected = m_chooser.getSelected();
 
     leftRear.setIdleMode(IdleMode.kBrake);
@@ -280,10 +281,10 @@ public class Robot extends TimedRobot {
     rightRear.setIdleMode(IdleMode.kBrake);
     rightFront.setIdleMode(IdleMode.kBrake);
 
-    AUTO_LAUNCH_DELAY_S = 2;
-    AUTO_DRIVE_DELAY_S = 3;
+    AUTO_LAUNCH_DELAY_S = 1.5;
+    AUTO_DRIVE_DELAY_S = 1;
 
-    AUTO_DRIVE_TIME_S = 2.0;
+    AUTO_DRIVE_TIME_S = 4;
     AUTO_DRIVE_SPEED = -0.5;
     AUTO_LAUNCHER_SPEED = 1;
     
@@ -293,16 +294,41 @@ public class Robot extends TimedRobot {
      *
      * For kDrive you can also change the kAutoDriveBackDelay
      */
+    if(m_autoSelected == kLaunchAndDrive){
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 255, 35);
+     }
+     m_led.setData(m_ledBuffer);
+    }
     if(m_autoSelected == kLaunch)
     {
       AUTO_DRIVE_SPEED = 0;
+      m_drivetrain.arcadeDrive(0, 0);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 255, 0);
+     }
+     m_led.setData(m_ledBuffer);
     }
     else if(m_autoSelected == kDrive)
     {
+      m_drivetrain.arcadeDrive(0, 0);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 255, 0, 0);
+     }
+     m_led.setData(m_ledBuffer);
       AUTO_LAUNCHER_SPEED = 0;
     }
     else if(m_autoSelected == kNothingAuto)
     {
+      m_drivetrain.arcadeDrive(0, 0);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 0, 255);
+     }
+     m_led.setData(m_ledBuffer);
       AUTO_DRIVE_SPEED = 0;
       AUTO_LAUNCHER_SPEED = 0;
     }
@@ -328,20 +354,25 @@ public class Robot extends TimedRobot {
      */
     if(timeElapsed < AUTO_LAUNCH_DELAY_S)
     {
-      //m_launchWheel.set(AUTO_LAUNCHER_SPEED);
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(-CLAW_OUTPUT_POWER);
       m_drivetrain.arcadeDrive(0, 0);
 
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S)
     {
-      //m_feedWheel.set(AUTO_LAUNCHER_SPEED);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0);
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
     {
-      //m_launchWheel.set(0);
-      //m_feedWheel.set(0);
-      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
     else
     {
@@ -394,7 +425,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
+    rainbow();
     /*
      * Spins up the launcher wheel
      */
@@ -447,7 +478,7 @@ public class Robot extends TimedRobot {
       m_launchWheel.set(-LAUNCHER_AMP_SPEED);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
-        m_ledBuffer.setRGB(i, 0, 255, 0);
+        m_ledBuffer.setRGB(i, 255, 0, 0);
      }
      
      m_led.setData(m_ledBuffer);
@@ -469,6 +500,12 @@ public class Robot extends TimedRobot {
     if(m_manipController.getRawButton(3))
     {
       m_rollerClaw.set(CLAW_OUTPUT_POWER);
+      m_drivetrain.arcadeDrive(0, 0);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 255, 0);
+     }
+     m_led.setData(m_ledBuffer);
     }
     else if(m_manipController.getRawButton(4))
     {
