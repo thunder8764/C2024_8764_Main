@@ -9,7 +9,6 @@ package frc.robot;
 // Imports that allow the usage of REV Spark Max motor controllers
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -147,7 +146,7 @@ public class Robot extends TimedRobot {
   /**
    * Percent output for the roller claw
    */
-  static final double CLAW_OUTPUT_POWER = 1;
+  static final double CLAW_OUTPUT_POWER = 0.5;
   /**
    * Percent output to help retain notes in the claw
    */
@@ -169,6 +168,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    
     
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
     m_chooser.addOption("launch note and drive", kLaunchAndDrive);
@@ -221,6 +221,7 @@ public class Robot extends TimedRobot {
     //m_climber.setInverted(false);
 
     m_rollerClaw.setSmartCurrentLimit(30);
+
     //m_climber.setSmartCurrentLimit(60);
     /*
      * Motors can be set to idle in brake or coast mode.
