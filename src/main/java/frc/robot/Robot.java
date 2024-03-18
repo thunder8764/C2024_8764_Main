@@ -74,7 +74,8 @@ public class Robot extends TimedRobot {
   CANSparkBase m_rollerClaw = new CANSparkMax(8, MotorType.kBrushless);
   CANSparkMax m_pivotMotor = new CANSparkMax(7,MotorType.kBrushless);
   DutyCycleEncoder encoder = new DutyCycleEncoder(0);
-  
+  CANSparkBase m_climber_1 = new CANSparkMax(9, MotorType.kBrushed);
+  CANSparkBase m_climber_2 = new CANSparkMax(10, MotorType.kBrushed);
   
   
   /**
@@ -96,7 +97,7 @@ public class Robot extends TimedRobot {
   Joystick m_driverController = new Joystick(0);
 
 
-  Joystick m_manipController = new Joystick(0);
+  Joystick m_manipController = new Joystick(1);
 
 
   // --------------- Magic numbers. Use these to adjust settings. ---------------
@@ -146,7 +147,7 @@ public class Robot extends TimedRobot {
   /**
    * Percent output for the roller claw
    */
-  static final double CLAW_OUTPUT_POWER = 0.5;
+  static final double CLAW_OUTPUT_POWER = 0.2;
   /**
    * Percent output to help retain notes in the claw
    */
@@ -156,8 +157,8 @@ public class Robot extends TimedRobot {
    */
   static final double CLIMER_OUTPUT_POWER = 1;
 
-  static final float PIVOT_MIN = 0.03f;
-  static final float PIVOT_MAX = 0.61f;
+  static final float PIVOT_MIN = 62;
+  static final float PIVOT_MAX = 278;
   AddressableLED m_led;
   AddressableLEDBuffer m_ledBuffer;
   int m_rainbowFirstPixelHue;
@@ -218,18 +219,21 @@ public class Robot extends TimedRobot {
      * Inverting and current limiting for roller claw and climber
      */
     m_rollerClaw.setInverted(false);
-    //m_climber.setInverted(false);
+    m_climber_1.setInverted(false);
+    m_climber_2.setInverted(false);
 
     m_rollerClaw.setSmartCurrentLimit(30);
 
-    //m_climber.setSmartCurrentLimit(60);
+    m_climber_1.setSmartCurrentLimit(60);
+    m_climber_2.setSmartCurrentLimit(60);
     /*
      * Motors can be set to idle in brake or coast mode.
      * 
      * Brake mode is best for these mechanisms
      */
     m_rollerClaw.setIdleMode(IdleMode.kBrake);
-    //m_climber.setIdleMode(IdleMode.kBrake);
+    m_climber_1.setIdleMode(IdleMode.kBrake);
+    m_climber_2.setIdleMode(IdleMode.kBrake);
     m_feedWheel.setIdleMode(IdleMode.kCoast);
     m_launchWheel.setIdleMode(IdleMode.kCoast);
     m_pivotMotor.setIdleMode(IdleMode.kBrake);
@@ -248,7 +252,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     SmartDashboard.putNumber("Time (seconds)", Timer.getFPGATimestamp());
-    SmartDashboard.putNumber("Pivot Encoder", encoder.getDistance());
+    SmartDashboard.putNumber("Pivot Encoder", encoder.getAbsolutePosition() * 360);
 
   }
 
@@ -286,7 +290,7 @@ public class Robot extends TimedRobot {
     AUTO_LAUNCH_DELAY_S = 1.5;
     AUTO_DRIVE_DELAY_S = 1;
 
-    AUTO_DRIVE_TIME_S = 4;
+    AUTO_DRIVE_TIME_S = 6;
     AUTO_DRIVE_SPEED = -0.5;
     AUTO_LAUNCHER_SPEED = 1;
     
@@ -358,7 +362,7 @@ public class Robot extends TimedRobot {
     {
       m_launchWheel.set(LAUNCHER_SPEED);
       m_feedWheel.set(LAUNCHER_SPEED);
-      m_rollerClaw.set(-CLAW_OUTPUT_POWER);
+      m_rollerClaw.set(CLAW_OUTPUT_POWER);
       m_drivetrain.arcadeDrive(0, 0);
 
     }
@@ -424,6 +428,9 @@ public class Robot extends TimedRobot {
         //m_pivotMotor.setSoftLimit(SoftLimitDirection.kForward, PIVOT_MAX);		// 15
         //m_pivotMotor.setSoftLimit(SoftLimitDirection.kReverse, PIVOT_MIN);		// 0
   }
+  public boolean pivotReady(float target){
+    return Math.abs((this.encoder.getAbsolutePosition() * 360) - target) <= 3;
+  }
 
   /** This function is called periodically during operator control. */
   @Override
@@ -450,7 +457,7 @@ public class Robot extends TimedRobot {
      */
     if (m_manipController.getRawButton(6))
     {
-      m_pivotMotor.set(0.1);
+      m_pivotMotor.set(0.27);
     }
     else if(m_manipController.getRawButtonReleased(6))
     {
@@ -462,7 +469,7 @@ public class Robot extends TimedRobot {
      */
     if(m_manipController.getRawButton(5))
     {
-      m_pivotMotor.set(-0.1);
+      m_pivotMotor.set(-0.27);
     }
     else if(m_manipController.getRawButtonReleased(5))
     {
@@ -492,6 +499,38 @@ public class Robot extends TimedRobot {
       m_launchWheel.set(0);
     }
 
+    if(m_driverController.getRawButton(5)){
+      m_climber_1.set(CLIMER_OUTPUT_POWER);
+      m_climber_2.set(-CLIMER_OUTPUT_POWER);
+    }
+    else if(m_driverController.getRawButtonReleased(5)){
+      m_climber_1.set(0);
+      m_climber_2.set(0);
+    }
+    if(m_driverController.getRawButton(6)){
+      m_climber_1.set(-CLIMER_OUTPUT_POWER);
+      m_climber_2.set(CLIMER_OUTPUT_POWER);
+    }
+    else if(m_driverController.getRawButtonReleased(6)){
+      m_climber_1.set(0);
+      m_climber_2.set(0);
+    }
+    if(m_driverController.getRawButton(3)){
+      //m_climber_1.set(-CLIMER_OUTPUT_POWER);
+      m_climber_2.set(CLIMER_OUTPUT_POWER);
+    }
+    else if(m_driverController.getRawButtonReleased(3)){
+      //m_climber_1.set(0);
+      m_climber_2.set(0);
+    }
+    if(m_driverController.getRawButton(4)){
+      m_climber_1.set(-CLIMER_OUTPUT_POWER);
+      //m_climber_2.set(CLIMER_OUTPUT_POWER);
+    }
+    else if(m_driverController.getRawButtonReleased(3)){
+      m_climber_1.set(0);
+      //m_climber_2.set(0);
+    }
     /**
      * Hold one of the two buttons to either intake or exjest note from roller claw
      * 
@@ -502,7 +541,7 @@ public class Robot extends TimedRobot {
      */ 
     if(m_manipController.getRawButton(3))
     {
-      m_rollerClaw.set(-0.8);
+      m_rollerClaw.set(-0.45);
       m_drivetrain.arcadeDrive(0, 0);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
@@ -512,7 +551,7 @@ public class Robot extends TimedRobot {
     }
     else if(m_manipController.getRawButton(4))
     {
-      m_rollerClaw.set(CLAW_OUTPUT_POWER);
+      m_rollerClaw.set(0.3);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
         m_ledBuffer.setRGB(i, 255, 0, 255);
@@ -530,18 +569,7 @@ public class Robot extends TimedRobot {
      * 
      * After a match re-enable your robot and unspool the climb
      */
-    if(m_manipController.getPOV() == 0)
-    {
-     /*  m_climber.set(1);*/
-    }
-    else if(m_manipController.getPOV() == 180)
-    {
-     /* m_climber.set(-1);*/
-    }
-    else
-    {
-      /*m_climber.set(0);*/
-    }
+    
   
     /*
      * Negative signs are here because the values from the analog sticks are backwards
