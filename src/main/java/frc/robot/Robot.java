@@ -278,6 +278,15 @@ public class Robot extends TimedRobot {
   double autonomousStartTime;
 
   @Override
+  public void disabledInit() {
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Sets the specified LED to the HSV values for red
+      m_ledBuffer.setRGB(i, 255, 0, 255);
+   }
+   m_led.setData(m_ledBuffer);
+  }
+  
+  @Override
   public void autonomousInit() {
     
     m_autoSelected = m_chooser.getSelected();
