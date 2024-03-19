@@ -6,6 +6,8 @@ package frc.robot;
 
 
 
+import java.util.Optional;
+
 // Imports that allow the usage of REV Spark Max motor controllers
 import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -14,6 +16,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -278,13 +282,37 @@ public class Robot extends TimedRobot {
   double autonomousStartTime;
 
   @Override
-  public void disabledInit() {
-    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-      // Sets the specified LED to the HSV values for red
-      m_ledBuffer.setRGB(i, 255, 0, 255);
-   }
-   m_led.setData(m_ledBuffer);
+  public void disabledPeriodic() {
+    double breatheSpeed = 205;
+      int r = (int) (Math.pow(Math.sin(System.currentTimeMillis() / 1000.0), 2) * breatheSpeed);
+      Optional<Alliance> ally = DriverStation.getAlliance();
+    if (ally.isPresent()) {
+      if (ally.get() == Alliance.Red) {
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, r, 0, 0);
+      }
+      m_led.setData(m_ledBuffer);
+      }
+      if (ally.get() == Alliance.Blue) {
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 0, r);
+      }
+      m_led.setData(m_ledBuffer);
+      }
+    }
+    else {
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, r, 0, r);
+      }
+      m_led.setData(m_ledBuffer);
+    }
+      
   }
+  
+
   
   @Override
   public void autonomousInit() {
@@ -444,7 +472,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    rainbow();
+      
+    
     /*
      * Spins up the launcher wheel
      */
