@@ -280,10 +280,10 @@ public class Robot extends TimedRobot {
   double AUTO_LAUNCHER_SPEED;
 
   double autonomousStartTime;
-
+  
   @Override
   public void disabledPeriodic() {
-    double breatheSpeed = 205;
+    double breatheSpeed = 175;
       int r = (int) (Math.pow(Math.sin(System.currentTimeMillis() / 1000.0), 2) * breatheSpeed);
       Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
@@ -308,6 +308,7 @@ public class Robot extends TimedRobot {
         m_ledBuffer.setRGB(i, r, 0, r);
       }
       m_led.setData(m_ledBuffer);
+      
     }
       
   }
