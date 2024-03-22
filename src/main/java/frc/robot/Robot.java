@@ -328,7 +328,7 @@ public class Robot extends TimedRobot {
     AUTO_LAUNCH_DELAY_S = 1.5;
     AUTO_DRIVE_DELAY_S = 1;
 
-    AUTO_DRIVE_TIME_S = 6;
+    AUTO_DRIVE_TIME_S = 1.8;
     AUTO_DRIVE_SPEED = -0.5;
     AUTO_LAUNCHER_SPEED = 1;
     
@@ -384,6 +384,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    Optional<Alliance> ally = DriverStation.getAlliance();
 
     double timeElapsed = Timer.getFPGATimestamp() - autonomousStartTime;
 
@@ -396,22 +397,38 @@ public class Robot extends TimedRobot {
      *
      * Does not move when time is greater than AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S
      */
+
+    if (m_autoSelected == kLaunchAndDrive && ally.get()== Alliance.Red){
     if(timeElapsed < AUTO_LAUNCH_DELAY_S)
     {
       m_launchWheel.set(LAUNCHER_SPEED);
       m_feedWheel.set(LAUNCHER_SPEED);
-      m_rollerClaw.set(CLAW_OUTPUT_POWER);
+      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0);
 
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, 0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0.5);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
@@ -422,6 +439,50 @@ public class Robot extends TimedRobot {
     {
       m_drivetrain.arcadeDrive(0, 0);
     }
+  }
+    if (m_autoSelected == kLaunch){
+    if(timeElapsed < AUTO_LAUNCH_DELAY_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else
+    {
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+  }
+
     /* For an explanation on differintial drive, squaredInputs, arcade drive and tank drive see the bottom of this file */
   }
 
@@ -580,7 +641,7 @@ public class Robot extends TimedRobot {
      */ 
     if(m_manipController.getRawButton(3))
     {
-      m_rollerClaw.set(-0.45);
+      m_rollerClaw.set(0.3);
       m_drivetrain.arcadeDrive(0, 0);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
@@ -590,7 +651,7 @@ public class Robot extends TimedRobot {
     }
     else if(m_manipController.getRawButton(4))
     {
-      m_rollerClaw.set(0.3);
+      m_rollerClaw.set(-0.45);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
         m_ledBuffer.setRGB(i, 255, 0, 255);
@@ -621,7 +682,7 @@ public class Robot extends TimedRobot {
      * This was setup with a logitech controller, note there is a switch on the back of the
      * controller that changes how it functions
      */
-    m_drivetrain.arcadeDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(4), false);
+    m_drivetrain.arcadeDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(2), false);
   }
 }
 
