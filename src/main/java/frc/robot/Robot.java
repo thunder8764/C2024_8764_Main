@@ -281,6 +281,7 @@ public class Robot extends TimedRobot {
 
   double autonomousStartTime;
   
+  // LED's
   @Override
   public void disabledPeriodic() {
     double breatheSpeed = 175;
@@ -427,6 +428,48 @@ public class Robot extends TimedRobot {
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0.5);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else
+    {
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+  }
+  if (m_autoSelected == kLaunchAndDrive && ally.get()== Alliance.Blue){
+    if(timeElapsed < AUTO_LAUNCH_DELAY_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, -0.5);
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
     {
