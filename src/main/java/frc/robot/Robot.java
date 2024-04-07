@@ -33,9 +33,11 @@ public class Robot extends TimedRobot {
    * Autonomous selection options.
    */
   private static final String kNothingAuto = "do nothing";
-  private static final String kLaunchAndDrive = "launch drive";
+  private static final String kLaunchAndDriveAmp = "launch drive";
+  private static final String kLaunchAndDrive = "launch drive wide";
   private static final String kLaunch = "launch";
   private static final String kDrive = "drive";
+  private static final String kdoubleCenter = "2 note center";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -176,7 +178,9 @@ public class Robot extends TimedRobot {
     
     
     m_chooser.setDefaultOption("do nothing", kNothingAuto);
-    m_chooser.addOption("launch note and drive", kLaunchAndDrive);
+    m_chooser.addOption("launch note and drive Amp", kLaunchAndDriveAmp);
+        m_chooser.addOption("launch note and drive", kLaunchAndDrive);
+    m_chooser.addOption("2 note center", kdoubleCenter);
     m_chooser.addOption("launch", kLaunch);
     m_chooser.addOption("drive", kDrive);
     SmartDashboard.putData("Auto choices", m_chooser);
@@ -339,10 +343,26 @@ public class Robot extends TimedRobot {
      *
      * For kDrive you can also change the kAutoDriveBackDelay
      */
+    if (m_autoSelected == kdoubleCenter){
+      double breatheSpeed = 400;
+      int r = (int) (Math.pow(Math.sin(System.currentTimeMillis() / 1000.0), 2) * breatheSpeed);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, r, 0, r);
+      }
+      m_led.setData(m_ledBuffer);
+    }
     if(m_autoSelected == kLaunchAndDrive){
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
         m_ledBuffer.setRGB(i, 0, 255, 35);
+     }
+     m_led.setData(m_ledBuffer);
+    }
+    if(m_autoSelected == kLaunchAndDriveAmp){
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 0, 0, 255);
      }
      m_led.setData(m_ledBuffer);
     }
@@ -399,7 +419,7 @@ public class Robot extends TimedRobot {
      * Does not move when time is greater than AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S
      */
 
-    if (m_autoSelected == kLaunchAndDrive && ally.get()== Alliance.Red){
+    if (m_autoSelected == kLaunchAndDriveAmp && ally.get()== Alliance.Red){
     if(timeElapsed < AUTO_LAUNCH_DELAY_S)
     {
       m_launchWheel.set(LAUNCHER_SPEED);
@@ -422,12 +442,12 @@ public class Robot extends TimedRobot {
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+2.56)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, 0.5);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0.8);
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
     {
@@ -441,7 +461,7 @@ public class Robot extends TimedRobot {
       m_drivetrain.arcadeDrive(0, 0);
     }
   }
-  if (m_autoSelected == kLaunchAndDrive && ally.get()== Alliance.Blue){
+  if (m_autoSelected == kLaunchAndDriveAmp && ally.get()== Alliance.Blue){
     if(timeElapsed < AUTO_LAUNCH_DELAY_S)
     {
       m_launchWheel.set(LAUNCHER_SPEED);
@@ -457,29 +477,84 @@ public class Robot extends TimedRobot {
       m_rollerClaw.set(0.3);
       m_drivetrain.arcadeDrive(0, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+2.4)
     {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_pivotMotor.set(-0.27);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+3.4)
+    {
+      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+3.80)
     {
+      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, -0.5);
+      m_drivetrain.arcadeDrive(0, -0.7);
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
     {
+      m_pivotMotor.set(0);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(-0.6);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+8.4)
+    {
+      m_pivotMotor.set(0.27);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(-0.6);
+      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+8.8)
+    {
+      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+      m_drivetrain.arcadeDrive(0, 0.7);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+9.6)
+    {
+      m_pivotMotor.set(0);
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0.7);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+10.6)
+    {
+      m_pivotMotor.set(0);
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+14.6)
+    {
+      m_pivotMotor.set(0);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
     }
     else
     {
+      m_pivotMotor.set(0);
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0);
     }
   }
@@ -506,6 +581,7 @@ public class Robot extends TimedRobot {
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0);
     }
+
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
     {
       m_launchWheel.set(0);
@@ -525,6 +601,140 @@ public class Robot extends TimedRobot {
       m_drivetrain.arcadeDrive(0, 0);
     }
   }
+  if (m_autoSelected == kLaunchAndDrive){
+    if(timeElapsed < AUTO_LAUNCH_DELAY_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+1.56)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else
+    {
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+  }
+  if (m_autoSelected == kdoubleCenter){
+    if(timeElapsed < AUTO_LAUNCH_DELAY_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+3.4)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_pivotMotor.set(-0.27);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+5.56)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(-0.6);
+      m_pivotMotor.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(-0.6);
+      m_pivotMotor.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+8.4)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(-0.6);
+      m_pivotMotor.set(0.27);
+      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+9.8)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_pivotMotor.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < 15)
+    {
+      m_launchWheel.set(LAUNCHER_SPEED);
+      m_feedWheel.set(LAUNCHER_SPEED);
+      m_rollerClaw.set(0.3);
+      m_pivotMotor.set(0);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
+    }
+    else if (timeElapsed >= 15){
+          m_launchWheel.set(0);
+          m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_pivotMotor.set(0);
+
+      m_drivetrain.arcadeDrive(0, 0);
+
+    }
+    else 
+    {
+    m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
+      m_pivotMotor.set(0);
+
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+  }
+  
+  
 
     /* For an explanation on differintial drive, squaredInputs, arcade drive and tank drive see the bottom of this file */
   }
@@ -641,6 +851,20 @@ public class Robot extends TimedRobot {
       m_feedWheel.set(0);
       m_launchWheel.set(0);
     }
+    if(m_manipController.getRawButton(7))
+    {
+      m_rollerClaw.set(0.6);
+      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+        // Sets the specified LED to the HSV values for red
+        m_ledBuffer.setRGB(i, 255, 255, 0);
+     }
+     
+     m_led.setData(m_ledBuffer);
+    }
+    else if(m_manipController.getRawButtonReleased(7))
+    {
+      m_rollerClaw.set(0);
+    }
 
     if(m_driverController.getRawButton(5)){
       m_climber_1.set(CLIMER_OUTPUT_POWER);
@@ -659,7 +883,7 @@ public class Robot extends TimedRobot {
       m_climber_2.set(0);
     }
     if(m_driverController.getRawButton(3)){
-      //m_climber_1.set(-CLIMER_OUTPUT_POWER);
+      m_climber_1.set(-CLIMER_OUTPUT_POWER);
       m_climber_2.set(CLIMER_OUTPUT_POWER);
     }
     else if(m_driverController.getRawButtonReleased(3)){
@@ -667,12 +891,12 @@ public class Robot extends TimedRobot {
       m_climber_2.set(0);
     }
     if(m_driverController.getRawButton(4)){
-      m_climber_1.set(-CLIMER_OUTPUT_POWER);
-      //m_climber_2.set(CLIMER_OUTPUT_POWER);
+      //m_climber_1.set(-CLIMER_OUTPUT_POWER);
+      m_climber_2.set(CLIMER_OUTPUT_POWER);
     }
     else if(m_driverController.getRawButtonReleased(3)){
-      m_climber_1.set(0);
-      //m_climber_2.set(0);
+      //m_climber_1.set(0);
+      m_climber_2.set(0);
     }
     /**
      * Hold one of the two buttons to either intake or exjest note from roller claw
@@ -684,7 +908,7 @@ public class Robot extends TimedRobot {
      */ 
     if(m_manipController.getRawButton(3))
     {
-      m_rollerClaw.set(0.3);
+      m_rollerClaw.set(0.6);
       m_drivetrain.arcadeDrive(0, 0);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
         // Sets the specified LED to the HSV values for red
@@ -725,7 +949,7 @@ public class Robot extends TimedRobot {
      * This was setup with a logitech controller, note there is a switch on the back of the
      * controller that changes how it functions
      */
-    m_drivetrain.arcadeDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(2), false);
+    m_drivetrain.arcadeDrive(-m_driverController.getRawAxis(1), -m_driverController.getRawAxis(4), false);
   }
 }
 
