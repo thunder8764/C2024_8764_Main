@@ -678,7 +678,7 @@ public class Robot extends TimedRobot {
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
-      m_rollerClaw.set(-0.6);
+      m_rollerClaw.set(-0.4);
       m_pivotMotor.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
@@ -686,7 +686,7 @@ public class Robot extends TimedRobot {
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
-      m_rollerClaw.set(-0.6);
+      m_rollerClaw.set(-0.4);
       m_pivotMotor.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
@@ -694,7 +694,7 @@ public class Robot extends TimedRobot {
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
-      m_rollerClaw.set(-0.6);
+      m_rollerClaw.set(-0.4);
       m_pivotMotor.set(0.27);
       m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0);
     }
