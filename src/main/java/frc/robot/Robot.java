@@ -440,16 +440,23 @@ public class Robot extends TimedRobot {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
+      m_drivetrain.arcadeDrive(0, 0);
+    }
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+8)
+    {
+      m_launchWheel.set(0);
+      m_feedWheel.set(0);
+      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+2.56)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+9.56)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0.8);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+13)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
@@ -477,84 +484,36 @@ public class Robot extends TimedRobot {
       m_rollerClaw.set(0.3);
       m_drivetrain.arcadeDrive(0, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+2.4)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+1)
     {
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_pivotMotor.set(-0.27);
       m_drivetrain.arcadeDrive(0, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+3.4)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + AUTO_DRIVE_TIME_S+8)
     {
-      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
     }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+3.80)
+    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+9.56)
     {
-      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
       m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, -0.7);
+      m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, -0.8);
     }
     else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+6)
     {
-      m_pivotMotor.set(0);
       m_launchWheel.set(0);
       m_feedWheel.set(0);
-      m_rollerClaw.set(-0.6);
+      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(-AUTO_DRIVE_SPEED, 0);
-    }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+8.4)
-    {
-      m_pivotMotor.set(0.27);
-      m_launchWheel.set(0);
-      m_feedWheel.set(0);
-      m_rollerClaw.set(-0.6);
-      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0);
-    }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+8.8)
-    {
-      m_pivotMotor.set(0);
-      m_launchWheel.set(0);
-      m_feedWheel.set(0);
-      m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, 0.7);
-    }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+9.6)
-    {
-      m_pivotMotor.set(0);
-      m_launchWheel.set(LAUNCHER_SPEED);
-      m_feedWheel.set(LAUNCHER_SPEED);
-      m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(AUTO_DRIVE_SPEED, 0.7);
-    }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+10.6)
-    {
-      m_pivotMotor.set(0);
-      m_launchWheel.set(LAUNCHER_SPEED);
-      m_feedWheel.set(LAUNCHER_SPEED);
-      m_rollerClaw.set(0.3);
-      m_drivetrain.arcadeDrive(0, 0);
-    }
-    else if(timeElapsed < AUTO_DRIVE_DELAY_S + (AUTO_DRIVE_TIME_S)+14.6)
-    {
-      m_pivotMotor.set(0);
-      m_launchWheel.set(0);
-      m_feedWheel.set(0);
-      m_rollerClaw.set(0);
-      m_drivetrain.arcadeDrive(0, 0);
     }
     else
     {
-      m_pivotMotor.set(0);
-      m_launchWheel.set(0);
-      m_feedWheel.set(0);
-      m_rollerClaw.set(0);
       m_drivetrain.arcadeDrive(0, 0);
     }
   }
